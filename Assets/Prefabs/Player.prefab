@@ -22,8 +22,6 @@ GameObject:
   - component: {fileID: 33410263804249558}
   - component: {fileID: 136773009205518100}
   - component: {fileID: 23758990596866104}
-  - component: {fileID: 114982179772827712}
-  - component: {fileID: 114497646275882282}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -170,51 +168,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114497646275882282
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1016377779955302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4189872f208844050bdecfc3f0317437, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 0}
-  bulletSpawn: {fileID: 0}
---- !u!114 &114982179772827712
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1016377779955302}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 372142912, guid: dc443db3e92b4983b9738c1131f555cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_SceneId:
-    m_Value: 0
-  m_AssetId:
-    i0: 254
-    i1: 148
-    i2: 214
-    i3: 41
-    i4: 126
-    i5: 162
-    i6: 244
-    i7: 222
-    i8: 217
-    i9: 56
-    i10: 168
-    i11: 248
-    i12: 163
-    i13: 152
-    i14: 157
-    i15: 81
-  m_ServerOnly: 0
-  m_LocalPlayerAuthority: 1
 --- !u!136 &136773009205518100
 CapsuleCollider:
   m_ObjectHideFlags: 1
