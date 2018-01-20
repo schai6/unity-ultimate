@@ -64,8 +64,11 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
 			if (!isLocalPlayer)
 			{
+				GetComponent<FirstPersonController>().enabled = false;
+				GetComponentInChildren<Camera>().enabled = false;
 				return;
 			}
+
             RotateView();
             // the jump state needs to read here to make sure it is not missed
             if (!m_Jump)
@@ -263,6 +266,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
 		public override void OnStartLocalPlayer ()
 		{
+			GetComponent<FirstPersonController>().enabled = true;
 			GetComponent<MeshRenderer>().material.color = Color.blue;
 		}
     }
