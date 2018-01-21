@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class PlayerNetwork : MonoBehaviour {
 
-	[SerializeField] private GameObject playerCamera;
-	[SerializeField] private MonoBehaviour[] playerControlScripts;
+	[SerializeField] private Behaviour[] componentsToDisable;
 
 	private PhotonView photonView;
 
@@ -19,13 +18,16 @@ public class PlayerNetwork : MonoBehaviour {
 	private void Initialize()
 	{
 		if (photonView.isMine) {
-		
-		} else {
-			playerCamera.SetActive(false);
 
-			foreach(MonoBehaviour m in playerControlScripts) {
+		} else {
+			foreach(Behaviour m in componentsToDisable) {
 				m.enabled = false;
 			}
 		}
+	}
+
+	private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+	{
+		
 	}
 }
