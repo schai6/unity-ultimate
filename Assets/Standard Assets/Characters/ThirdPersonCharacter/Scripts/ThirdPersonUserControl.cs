@@ -103,6 +103,6 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             m_Jump = jump;
             m_Character.Move(move, crouch, jump);
         }
-
     }
 }
+
