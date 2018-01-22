@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class Player : MonoBehaviour {
 
 	private Rigidbody discRigidBody;
 
-	public GameObject playerCamera;
+	[SerializeField] private GameObject playerCamera;
 	private GameObject disc;
 
 	public float discDistance = 2f;
@@ -89,35 +90,42 @@ public class Player : MonoBehaviour {
 		zTiltMax = 40;
 		discInitialPosition = disc.transform.localPosition; // Get disc localposition related to Player
 		discInitialRotation = disc.transform.localRotation; // Get disc localrotation
-		Debug.Log(disc);
 		discRigidBody = disc.GetComponent<Rigidbody>(); // Get Disc Rigidbody
+		ResetDisc ();
 	}
 
 	void OnTriggerEnter (Collider col)
 	{
 		if (col.gameObject.CompareTag ("Disc"))
 		{
-			disc.GetComponent<Rigidbody>().isKinematic = true;
+			discRigidBody.isKinematic = true;
+			discRigidBody.useGravity = false;
 			holdingDisc = true;
+			ResetDisc ();
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 		if (holdingDisc)
 		{
 			disc.transform.position = playerCamera.transform.position + playerCamera.transform.forward * discDistance;
-			if (Input.GetMouseButtonDown(LEFTCLICK))
+			if (Input.GetMouseButton (LEFTCLICK)) {
+				if (playerThrust < .6)
+					playerThrust += Time.deltaTime;
+				Debug.Log (playerThrust);
+			}
+			if (Input.GetMouseButtonUp(LEFTCLICK))
 				ThrowDisc();
 		}
 
 		//==============================================================
-		// The disc is Thrown
+		// The disc is Thrownvar move = 
 		//==============================================================
-//		if (isThrown)
-//		{ 
-//			CheckLanding ();
-//		}
+		if (isThrown)
+		{ 
+			CheckLanding ();
+		}
 		if (discRigidBody.velocity.magnitude > maxSpeed)
 			discRigidBody.velocity = discRigidBody.velocity.normalized * maxSpeed;
 	}
@@ -139,14 +147,13 @@ public class Player : MonoBehaviour {
 			Rotate (); // Rotate the disc
 		}
 	}
-//	void LateUpdate ()
-//	{
-//		if (!isThrown && Input.GetMouseButton (RIGHTCLICK)) 
-//		{ // Allow tilting the disc before released
-//			tiltUpDown ();
-//			tiltLeftRight ();
-//		}
-//	}
+	void LateUpdate ()
+	{
+		if (!isThrown && Input.GetMouseButton (RIGHTCLICK)) { // Allow tilting the disc before released
+			tiltUpDown ();
+			tiltLeftRight ();
+		}
+	}
 
 	//==============================================================
 	// Throw the disc
@@ -156,14 +163,13 @@ public class Player : MonoBehaviour {
 		//==============================================================
 		// Thrust in percent
 		//==============================================================
-		playerThrust = 0.3f; // 30%
 
 		//==============================================================
 		// Physics
 		//==============================================================
 
 		// Force side (Wind)
-//		force.x = Randomize (50, 60) * playerThrust;
+		force.x = Randomize (50, 60) * playerThrust;
 
 		// Curve Amount
 		curveAmount = Randomize (-1.5f, -1.2f) * playerThrust - (zTilt/24); // Randomize and Increase curveAmount
@@ -187,16 +193,14 @@ public class Player : MonoBehaviour {
 		else
 			force.z = Randomize (980, 1000) * playerThrust;
 
-		// Speed
-		maxSpeed = Randomize (maxSpeed-1.0f, maxSpeed+1.0f); // Randomize Max Speed
-
 		Physics.gravity = new Vector3 (0.0f, Gravity, 0.0f); // Let the disc be lighter..
 		discRigidBody.isKinematic = false; // Add gravity to the disc
+		discRigidBody.useGravity = true;
 
 		// Add force
-		discRigidBody.AddForce(disc.transform.right * force.x); // Add force on X to the disc
-		discRigidBody.AddForce(disc.transform.up * force.y); // Add force on Y to the disc
-		discRigidBody.AddForce(disc.transform.forward * force.z); // Add force on Z to the disc
+		discRigidBody.AddForce(playerCamera.transform.forward * force.x); // Add force on X to the disc
+		discRigidBody.AddForce(playerCamera.transform.forward * force.y); // Add force on Y to the disc
+		discRigidBody.AddForce(playerCamera.transform.forward * force.z); // Add force on Z to the disc
 
 		//==============================================================
 		// Set bools
@@ -220,6 +224,94 @@ public class Player : MonoBehaviour {
 //		disc.GetComponent<Rigidbody> ().useGravity = true;
 //		disc.GetComponent<Rigidbody> ().AddForce (playerCamera.transform.forward * discThrowingForce);
 //	}
+
+	void CheckLanding()
+	{	
+		if (discRigidBody.position.y < .1)
+		{
+			discRigidBody.velocity = discRigidBody.velocity / 1.4f; // Slow down the disc
+			discRigidBody.angularVelocity = Vector3.zero; // Stop rotation of the disc
+			isGrounded = true;
+		}
+		if(discRigidBody.IsSleeping() && isGrounded && isThrown)	
+		{
+			ResetDisc (); // Default values
+		}
+	}
+
+	void ResetDisc()
+	{
+		isThrown = false; // Next throw
+		isGrounded = false; // Not on ground
+		isRotate = false; // The disc will not rotate
+		playerThrust = 0f;
+
+		// Stop "AddForce". let the disc fall down
+		discRigidBody.velocity = Vector3.zero; // Stop velocity on the disc
+		discRigidBody.angularVelocity = Vector3.zero; // Stop rotation of the disc
+
+		// Reset some Physics. 
+		curveAmount = 0.0f;
+		force = Vector3.zero;
+		zTilt = 0.0f;
+		xTilt = 0.0f;
+	}
+
+	//==============================================================
+	// Tilt Frisbee Z and Y
+	//==============================================================
+	private void tiltUpDown ()
+	{
+		
+		xTilt += Input.GetAxis ("Mouse Y") * tiltSpeed * 0.02f;
+		xTilt = ClampAngle (xTilt, xTiltMin, xTiltMax);
+		tiltDesiredRotation = Quaternion.Euler (xTilt, 0, 0);
+		tiltCurrentRotation = disc.transform.localRotation;
+		disc.transform.localRotation = Quaternion.Lerp (tiltCurrentRotation, tiltDesiredRotation, Time.deltaTime * zoomDampening);
+	}
+
+	private void tiltLeftRight ()
+	{
+		zTilt -= Input.GetAxis ("Mouse X") * tiltSpeed * 0.02f;
+		zTilt = ClampAngle (zTilt, zTiltMin, zTiltMax);
+		tiltDesiredRotation = Quaternion.Euler (0, 0, zTilt);
+		tiltCurrentRotation = disc.transform.localRotation;
+		disc.transform.localRotation = Quaternion.Lerp (tiltCurrentRotation, tiltDesiredRotation, Time.deltaTime * zoomDampening);
+	}
+
+	//==============================================================
+	// Pan Camera (Player)
+	//==============================================================
+//	private void PanLeftRight ()
+//	{
+//		//yPan += Input.GetAxis ("Mouse X") * panSpeed * 0.02f;
+//		//yPan = ClampAngle (yPan, maxPanLeft, maxPanRight);
+//		//panDesiredRotation =player Quaternion.Euler (0, yPan, 0);
+//		//panCurrentRotation = Player.localRotation;
+//		//Player.localRotation = Quaternion.Lerp (panCurrentRotation, panDesiredRotation, Time.deltaTime * zoomDampening);
+//
+	//		yPan += Input.GetAxis ("Mouse X") * panSpeed * 0.02f;playerThrust
+//		yPan = ClampAngle (yPan, maxPanLeft, maxPanRight);
+//		panDesiredRotation = Quaternion.Euler (0, yPan, 0);
+//		panCurrentRotation = playerCamera.transform.rotation;
+//		playerCamera.transform.rotation = Quaternion.Lerp (panCurrentRotation, panDesiredRotation, Time.deltaTime * zoomDampening);
+//	}
+
+//	private void Pan ()
+//	{
+//		yPan = Input.GetAxis ("Mouse X") * panSpeed * 0.02f;
+//		playerCamera.transform.Rotate(0, yPan, 0, Space.Self);
+//	}
+
+	private float ClampAngle (float angle, float min, float max)
+	{
+		if (angle < -360f)
+			angle += 360f;
+		if (angle > 360f)
+			angle -= 360f;
+		return Mathf.Clamp (angle, min, max);
+	}
+
 
 	//==============================================================
 	// Get random float number between min - max
