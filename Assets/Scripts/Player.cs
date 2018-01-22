@@ -19,9 +19,9 @@ public class Player : MonoBehaviour {
 
 	void OnTriggerEnter (Collider col)
 	{
+		Debug.Log ("COLLISSIOSNSIONSION");
 		if (col.gameObject.CompareTag ("Disc"))
 		{
-			Debug.Log ("DISCCC");
 			disc.GetComponent<Rigidbody>().useGravity = false;
 			holdingDisc = true;
 		}
