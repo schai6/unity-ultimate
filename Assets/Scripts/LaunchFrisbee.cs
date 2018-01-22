@@ -16,9 +16,9 @@ public class LaunchFrisbee : MonoBehaviour
 	//==============================================================
 	// Game Transforms
 	//==============================================================
-	[SerializeField] private Transform Player; // Holder of the Disc
-	[SerializeField] private Transform Basket; // The DiscGolfBasket
-	[SerializeField] private Transform Disc; // The Frisbee
+	private Transform Player; // Holder of the Disc
+	private Transform Basket; // The DiscGolfBasket
+	private Transform Disc; // The Frisbee
 
 	//==============================================================
 	// Disc Initial Values
