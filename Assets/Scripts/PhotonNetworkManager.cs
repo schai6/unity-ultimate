@@ -15,7 +15,6 @@ public class PhotonNetworkManager : MonoBehaviour {
 	public virtual void OnJoinedLobby()
 	{
 		Debug.Log ("we have now joined the lobby");
-
 		PhotonNetwork.JoinOrCreateRoom("NewRoom", null, null);
 	}
 

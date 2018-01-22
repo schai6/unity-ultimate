@@ -11,7 +11,6 @@ public class PlayerNetwork : MonoBehaviour {
 	private void Start()
 	{
 		photonView = GetComponent<PhotonView> ();
-
 		Initialize ();
 	}
 
@@ -24,10 +23,5 @@ public class PlayerNetwork : MonoBehaviour {
 				m.enabled = false;
 			}
 		}
-	}
-
-	private void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-	{
-		
 	}
 }

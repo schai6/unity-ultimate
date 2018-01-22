@@ -113,7 +113,6 @@ public class Player : MonoBehaviour {
 			if (Input.GetMouseButton (LEFTCLICK)) {
 				if (playerThrust < .6)
 					playerThrust += Time.deltaTime;
-				Debug.Log (playerThrust);
 			}
 			if (Input.GetMouseButtonUp(LEFTCLICK))
 				ThrowDisc();
