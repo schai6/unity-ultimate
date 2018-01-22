@@ -22,5 +22,9 @@ public class PhotonNetworkManager : MonoBehaviour {
 	{
 		PhotonNetwork.Instantiate (player.name, spawnPoint.position, spawnPoint.rotation, 0);
 		lobbyCamera.SetActive (false);
+		if (PhotonNetwork.player.isMasterClient) 
+		{
+			PhotonNetwork.InstantiateSceneObject ("Disc", spawnPoint.position, spawnPoint.rotation, 0, null);
+		}
 	}
 }

@@ -25,7 +25,7 @@ public class Player : MonoBehaviour {
 	//==============================================================
 	// Game Transforms
 	//==============================================================
-	private Transform Disc; // The Frisbee
+//	private Transform Disc; // The Frisbee
 
 	//==============================================================
 	// Disc Initial Values
@@ -84,7 +84,7 @@ public class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		disc = GameObject.Find("Disc");
+		disc = GameObject.Find("Disc(Clone)");
 		rotateSpeed = 4000f;
 		zTiltMin = 0;
 		zTiltMax = 40;
